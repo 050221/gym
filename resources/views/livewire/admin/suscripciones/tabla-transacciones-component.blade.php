@@ -1,65 +1,62 @@
-<div id="tablas">
+<div class="mt-16 mb-3 mx-4">
+    <div>
+        <h1 class="text-4xl font-bold text-gray-400">Transacciones</h1>
+    </div>
+    <hr class="border-2 my-3 border-gray-500">
     <div class="flex flex-wrap ">
-        <div class="w-full">
-            <p class="text-4xl font-bold text-gray-400">Transacciones</p>
-            <center>
-                <hr class="border-2 my-3">
-            </center>
-        </div>
-
         <div class="w-full md:w-1/2 mt-4">
-            <input wire:model.live='search' type="text"
-                class="p-2.5 w-full text-base  rounded-md border border-gray-300 shadow-md hover:bg-gray-200 focus:ring-offset-2 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all duration-300 "
-                placeholder="Buscar...">
+            <x-forms.search-bar wire:model.live.debounce.250ms="search" placeholder="Buscar transacciones..." />
         </div>
-        <div class="w-full md:w-1/2 mt-4 ">
-            <div class="flex flex-row-reverse ">
-                <select name="" id="" wire:model.live ='numberRows'
-                    class="w-1/6 p-2  border-gray-200 text-gray-900 text-base rounded-lg focus:border-1 focus:ring-orange-500 focus:border-orange-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+        <div class="flex justify-end w-full md:w-6/12 mt-3 lg:mt-0 ">
+            <div class="w-[80px]">
+                <x-forms.select name="numberRows" :options="['10' => '10', '25' => '25', '50' => '50']" wire:model.live="numberRows" />
             </div>
         </div>
     </div>
 
-    <div class="table-responsive w-full">
-        <table class="table table-hover mt-10 ">
-            <thead class="table-light">
-                <tr>
-
-                    <th>Cliente</th>
-                    <th>Membresia</th>
-                    <th>Estado</th>
-                    <th>Monto</th>
-                    <th>Fecha de pago</th>
+    <div class="w-full overflow-x-auto rounded-sm mt-10">
+        <table class="w-full text-md text-left">
+            <thead class="text-gray-700 bg-gray-200">
+                <tr class="border-b border-gray-500 border-opacity-50">
+                    <th class="px-4 py-2">Cliente</th>
+                    <th class="px-4 py-2">Membresia</th>
+                    <th class="px-4 py-2">
+                        Monto
+                    </th>
+                    <th class="px-4 py-2 cursor-pointer" wire:click="sortBy('id')">
+                        Fecha de pago
+                        @if ($sortField === 'id')
+                            <i
+                                class="material-icons text-sm">{{ $sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</i>
+                        @endif
+                    </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-white">
                 @if ($transacciones->isEmpty())
                     <tr>
-                        <td colspan="12">
-                            <center>No hay resultados</center>
+                        <td colspan="12" class="text-center py-4">
+                            <div class="flex justify-center items-center text-gray-500 text-lg">
+                                <i class="material-icons text-gray-400 mr-2">info</i> No hay resultados
+                            </div>
                         </td>
                     </tr>
                 @else
                     @foreach ($transacciones as $key => $transaccion)
-                        <tr>
-                            <td>{{ $transaccion->nombre_cliente }}</td>
-                            <td>{{ $transaccion->nombre_membresia }}</td>
-                            <td>{{ $transaccion->status }}</td>
-                            <td>$ {{ $transaccion->monto }}</td>
-                            <td>{{ \Carbon\Carbon::parse($transaccion->fecha_pago)->isoFormat(' DD-MM-YYYY') }}</td>
+                        <tr class="border-b even:bg-gray-50 hover:bg-gray-100">
+                            <td class="px-4 py-2">{{ $transaccion->user->full_name }}</td>
+                            <td class="px-4 py-2">{{ $transaccion->membresia->nombre }}</td>
+                            <td class="px-4 py-2">$ {{ $transaccion->monto }}</td>
+                            <td class="px-4 py-2">
+                               {{ \Carbon\Carbon::parse($transaccion->fecha_pago)->isoFormat(' DD-MMMM-YYYY') }}
+                            </td>
                         </tr>
                     @endforeach
                 @endif
             </tbody>
         </table>
     </div>
-
-    <div class="w-full">
+    <div class="mt-3">
         {{ $transacciones->links() }}
     </div>
 </div>

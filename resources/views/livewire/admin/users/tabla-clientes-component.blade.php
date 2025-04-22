@@ -1,93 +1,97 @@
-<div id="tablas">
+<div class="mt-16 mb-3 mx-4">
     <div class="flex flex-wrap ">
         <div class="w-1/2">
             <h1 class="mb-0 sm:mb-3 text-4xl font-bold text-gray-400">Clientes</h1>
         </div>
         <div class="w-1/2">
             <div class="flex flex-row-reverse ">
-                @livewire('create-modal-component')
+                @livewire('user.create-modal-users-component')
             </div>
-        </div>
-        <div class="w-full ">
-            <center>
-                <hr class="border-2 my-3">
-            </center>
         </div>
     </div>
-    <div class="flex flex-wrap">
-        <div class="w-full md:w-6/12 pt-3 ">
-            <input wire:model.live='search' type="text"
-            class="p-2.5 w-full text-base  rounded-md border border-gray-300 shadow-md hover:bg-gray-200 focus:ring-offset-2 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all duration-300 "
-            placeholder="Buscar...">
+    <hr class="border-2 my-3 border-gray-500">
+    <div class="flex flex-wrap mt-4 ">
+        <div class="w-full md:w-6/12 mt-3 ">
+            <x-forms.search-bar wire:model.live.debounce.250ms="search" placeholder="Buscar usuarios..." />
         </div>
-        <div class="pl-0 md:pl-3 pt-3 md:pt-3 w-1/2 md:w-3/12">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-                    wire:model.live="status" value="Activo">
-                <label class="form-check-label" for="flexRadioDefault1">Activos</label>
+        <div class="flex justify-end gap-2 w-full md:w-6/12 mt-3 lg:mt-0 ">
+            <div class="w-[120px]">
+                <x-forms.select name="status" :options="['' => 'Todos', 'Activo' => 'Activos', 'Inactivo' => 'Inactivos']" wire:model.live="status" />
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
-                    wire:model.live="status" value="Inactivo">
-                <label class="form-check-label" for="flexRadioDefault2">Inactivos</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3"
-                    wire:model.live="status" value="">
-                <label class="form-check-label" for="flexRadioDefault3">Todos</label>
-            </div>
-        </div>
-        <div class="pt-3 md:pt-3 w-1/2 md:w-3/12  ">
-            <div class="flex flex-row-reverse">
-                <select name="" id="" wire:model.live ='numberRows'
-                    class=" w-1/2 md:w-1/3 p-2.5  border-gray-200 text-gray-900 text-base rounded-lg focus:border-1 focus:ring-orange-500 focus:border-orange-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+            <div class="w-[80px]">
+                <x-forms.select name="numberRows" classes="w-[80px]" :options="['10' => '10', '25' => '25', '50' => '50']" wire:model.live="numberRows" />
             </div>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover mt-10 ">
-            <thead class="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>Nombre completo</th>
-                    <th>Telefono</th>
-                    <th>Correo</th>
-                    <th>Estado</th>
-                    <th class="btn-sss">Acción</th>
+    <div class="w-full overflow-x-auto rounded-sm mt-10">
+        <table class="w-full text-md text-left">
+            <thead class="text-gray-700 bg-gray-200">
+                <tr class="border-b border-gray-500 border-opacity-50">
+                    <th class="px-4 py-2 cursor-pointer" wire:click="sortBy('id')">
+                        #
+                        @if ($sortField === 'id')
+                            <i
+                                class="material-icons text-sm ">{{ $sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</i>
+                        @endif
+                    </th>
+                    <th class="px-4 py-2 cursor-pointer" wire:click="sortBy('name')">
+                        Nombre completo
+                        @if ($sortField === 'name')
+                            <i
+                                class="material-icons text-sm">{{ $sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</i>
+                        @endif
+                    </th>
+                    <th class="px-4 py-2 cursor-pointer" wire:click="sortBy('status')">
+                        Estado
+                        @if ($sortField === 'status')
+                            <i
+                                class="material-icons text-sm">{{ $sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</i>
+                        @endif
+                    </th>
+                    <th class="px-4 py-2">Telefono</th>
+                    <th class="px-4 py-2">Correo Electronico</th>
+                    <th class="px-4 py-2">Acción</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-white">
                 @if ($users->isEmpty())
                     <tr>
-                        <td colspan="12">
-                            <center>No hay resultados</center>
+                        <td colspan="12" class="text-center py-4">
+                            <div class="flex justify-center items-center text-gray-500 text-lg">
+                                <i class="material-icons text-gray-400 mr-2">info</i> No hay resultados
+                            </div>
                         </td>
                     </tr>
                 @else
                     @foreach ($users as $key => $user)
-                        <tr>
-                            <th>{{ $key + 1 + $users->perPage() * ($users->currentPage() - 1) }}</th>
-                            <td>{{ $user->name . ' ' . $user->firstname . ' ' . $user->lastname }}</td>
-                            <td>{{ $user->phone }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td><button
-                                    class="{{ $user->status === 'Activo' ? 'bg-verde' : 'bg-rojo' }}">{{ $user->status }}</button>
+                        <tr class="border-b even:bg-gray-50 hover:bg-gray-100">
+                            <th class="px-4 py-2">{{ $user->row_number }}</th>
+                            <td class="px-4 py-2">{{ $user->full_name }}</td>
+                            <td class="px-4 py-2">
+                                <x-forms.status-button :status="$user->status" />
                             </td>
-                            <td>
-                                <form id="deleteForm" action="{{ url('/clientes/' . $user->id) }}" method="post">
-                                    @method('DELETE')
+                            <td class="px-4 py-2">{{ $user->phone }}</td>
+                            <td class="px-4 py-2">{{ $user->email }}</td>
+
+                            <td class="px-4 py-2">
+                                <form class="delete-form" action="{{ url('/clientes/' . $user->id) }}" method="POST">
                                     @csrf
-                                    <a href="{{ url('/clientes/' . $user->id . '/edit') }}"><i
-                                            class="material-icons icon-edit">edit</i></a>
-                                    <button
-                                        type=""onclick="return confirm('Estas seguro de eliminar ha este usuario?');"><i
-                                            class="material-icons icon-delete">delete</i></button>
+                                    @method('DELETE')
+                                    <a href="#" wire:click="$dispatch('viewUser', { id: {{ $user->id }} })"
+                                        data-bs-toggle="modal" title="Ver Cliente">
+                                        <i class="material-icons text-blue-500">visibility</i>
+                                    </a>
+
+                                    <a href="#" wire:click="$dispatch('editUser', { id: {{ $user->id }} })"
+                                        data-bs-toggle="modal" title="Editar Cliente">
+                                        <i class="material-icons text-yellow-500">edit</i>
+                                    </a>
+
+                                    <button type="button" onclick="confirmDelete(this)" title="Eliminar Cliente">
+                                        <i class="material-icons text-red-500">delete</i>
+                                    </button>
+
                                 </form>
                             </td>
                         </tr>
@@ -95,11 +99,11 @@
                 @endif
             </tbody>
         </table>
+        @livewire('user.edit-modal')
+        @livewire('user.view-cliente-modal')
     </div>
 
-    <div class="w-full ">
+    <div class="mt-3">
         {{ $users->links() }}
     </div>
-
-
 </div>

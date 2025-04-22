@@ -10,9 +10,14 @@ class membresias extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nombre_membresia',
+        'nombre',
         'descripcion',
-        'duracion',
+        'duracion_meses',
         'precio',
     ];
+
+    public function suscripciones()
+    {
+        return $this->hasMany(suscripciones::class, 'membresia_id');
+    }
 }

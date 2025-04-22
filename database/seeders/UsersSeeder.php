@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UsersSeeder extends Seeder
 {
@@ -17,15 +18,15 @@ class UsersSeeder extends Seeder
             'name' => 'Admin',
             'firstname' => 'Admin',
             'lastname' => 'Admin',
-            'gender' => 'Male', // Cambia esto según el género deseado
-            'phone' => '123456789', // Cambia esto según el teléfono deseado
+            'gender' => 'NULL', // Cambia esto según el género deseado
+            'phone' => 'NULL', // Cambia esto según el teléfono deseado
             'email' => 'administrador@gmail.com',
-            'password' => bcrypt('admin'),
+            'password' => Hash::make('admin'),
         ]);
         $admin->assignRole('Admin');
 
         // Crear usuarios normales y asignarles el rol 'User'
-        User::factory(50)->create()->each(function ($user) {
+        User::factory(20)->create()->each(function ($user) {
             $user->assignRole('User');
         });
     }

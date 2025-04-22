@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('membresias', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_membresia');
-            $table->string('descripcion');
-            $table->string('duracion');
-            $table->string('precio');
+            $table->string('nombre');
+            $table->text('descripcion')->nullable(); // Permitir valores nulos si la descripción no es obligatoria
+            $table->string('duracion_meses'); // Duración en días
+            $table->integer('precio'); 
             $table->timestamps();
         });
     }

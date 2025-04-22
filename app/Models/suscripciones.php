@@ -16,4 +16,16 @@ class suscripciones extends Model
         'fecha_inicio',
         'fecha_fin',
     ];
+
+    // Relación inversa con User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relación: una suscripción pertenece a una membresía
+    public function membresia()
+    {
+        return $this->belongsTo(membresias::class);
+    }
 }

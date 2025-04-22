@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <a href="/">  <img src="{{ asset('assets/icons/icon-144x144.png') }}" > </a>
+            <a href="/"> <x-logo-144 /> </a>
         </x-slot>
 
         <x-validation-errors class="mb-4" />
@@ -21,10 +21,10 @@
             </div>
 
             <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+                <x-label for="email" value="{{ __('Password') }}" />
+                <x-input-password id="password" name="password" required autocomplete="current-password" placeholder="" />
             </div>
-
+            
             <div class="block mt-4">
                 <label for="remember_me" class="flex items-center">
                     <x-checkbox id="remember_me" name="remember" />

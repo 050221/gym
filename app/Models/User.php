@@ -31,6 +31,9 @@ class User extends Authenticatable
         'lastname',
         'gender',
         'phone',
+        'birthdate',
+        'status',
+        'role',
         'email',
         'password',
     ];
@@ -63,7 +66,14 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'full_name',
     ];
+
+    
+    public function getFullNameAttribute()
+    {
+        return "{$this->name} {$this->firstname} {$this->lastname}";
+    }
 
     public function suscripciones()
     {

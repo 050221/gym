@@ -15,11 +15,15 @@ use App\Http\Controllers\MembresiasController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/', function () {
+    return to_route(auth()->check() ? 'dashboard' : 'login');
+});
 
+/*
 Route::get('/', function () {
     return view('auth.login');
 });
-
+*/
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -38,6 +42,7 @@ Route::middleware([
     Route::get('suscripciones', [SuscripcionesController::class, 'index'])->middleware('can:admin.suscripciones')->name('suscripciones');
     Route::get('suscripciones/{id}/edit', [SuscripcionesController::class, 'edit'])->middleware('can:admin.suscripciones.edit')->name('suscripciones.edit');
     Route::get('suscripciones/{id}', [SuscripcionesController::class, 'update'])->middleware('can:admin.suscripciones.update')->name('suscripciones.update');
+    Route::get('suscripciones/{id}', [SuscripcionesController::class, 'cancel'])->middleware('can:admin.suscripciones.cancel')->name('suscripciones.cancel');
     Route::delete('suscripciones/{id}', [SuscripcionesController::class, 'destroy'])->middleware('can:admin.suscripciones.destroy')->name('suscripciones.destroy');
     Route::get('transacciones', [SuscripcionesController::class, 'transacciones'])->middleware('can:admin.transacciones')->name('transacciones');
     Route::get('historialSuscripciones', [SuscripcionesController::class, 'historialSuscripciones'])->middleware('can:admin.historialSuscripciones')->name('historialSuscripciones');

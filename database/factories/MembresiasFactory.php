@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\membresias;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MembresiasFactory extends Factory
 {
+
+    protected $model = membresias::class;
     /**
      * Define the model's default state.
      *
@@ -17,10 +20,10 @@ class MembresiasFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre_membresia' => $this->faker->word,
-            'descripcion' => $this->faker->sentence,
-            'duracion' => $this->faker->numberBetween(1, 12), 
-            'precio' => $this->faker->randomFloat(2, 10, 1000),
+            'nombre' => $this->faker->word(),                // Un nombre aleatorio para la membresía
+            'descripcion' => $this->faker->sentence(),       // Descripción aleatoria
+            'duracion_meses' => $this->faker->numberBetween(1, 24), // Duración aleatoria entre 1 y 12 meses
+            'precio' => $this->faker->randomNumber(200, 6000), // Precio aleatorio entre 200 y 6000
         ];
     }
 }

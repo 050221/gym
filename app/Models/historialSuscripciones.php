@@ -16,4 +16,16 @@ class historialSuscripciones extends Model
         'fecha_fin',
         'estado_anterior',
     ];
+
+    // Relación inversa con User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relación: una suscripción pertenece a una membresía
+    public function membresia()
+    {
+        return $this->belongsTo(membresias::class);
+    }
 }

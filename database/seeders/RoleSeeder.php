@@ -27,6 +27,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.suscripciones'])->syncRoles([$Role1]);
         Permission::create(['name' => 'admin.suscripciones.edit'])->syncRoles([$Role1]);
         Permission::create(['name' => 'admin.suscripciones.update'])->syncRoles([$Role1]);
+        Permission::create(['name' => 'admin.suscripciones.cancel'])->syncRoles([$Role1]);
         Permission::create(['name' => 'admin.suscripciones.destroy'])->syncRoles([$Role1]);
         Permission::create(['name' => 'admin.transacciones'])->syncRoles([$Role1]);
         Permission::create(['name' => 'admin.historialSuscripciones'])->syncRoles([$Role1]);

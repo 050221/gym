@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
 
@@ -21,19 +22,18 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->firstName,
             'firstname' => $this->faker->firstName,
             'lastname' => $this->faker->lastName,
-            'gender' => $this->faker->randomElement(['male', 'female']),
-            'phone' => $this->faker->unique()->phoneNumber,
+            'gender' => $this->faker->randomElement(['Masculino', 'Femenino']),
+            'phone' => $this->faker->unique()->numerify('55########'),
+            'birthdate' => $this->faker->date('Y-m-d', '2005-12-31'), // Fecha antes de 2005
+            'status' => 'Inactivo', // Valor por defecto
+            'role' => 'User', // Valor por defecto
             'email' => $this->faker->unique()->safeEmail,
+            'password' => Hash::make('password'), // Hashear contraseña
             'email_verified_at' => now(),
-            'password' => bcrypt('123'), 
             'remember_token' => Str::random(10),
-            'profile_photo_path' => null, 
-            'current_team_id' => null, 
-            'created_at' => now(),
-            'updated_at' => now(),
         ];
     }
 

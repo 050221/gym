@@ -2,11 +2,12 @@
 
 namespace App\Livewire;
 
-
+use App\Models\suscripciones;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\transacciones;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
@@ -29,26 +30,21 @@ class DashboardComponent extends Component
 
     public function getChartData()
     {
-        
-
-
-        // Consulta para obtener la suma de montos por mes
-        $resultados = Transacciones::selectRaw('MONTHNAME(fecha_pago) AS nombre_mes, SUM(monto) AS monto_total')
-            ->whereYear('fecha_pago', now()->year)  // Filtrar por el año actual
-            ->groupBy(DB::raw('MONTH(fecha_pago), nombre_mes'))  // Agrupar por número de mes y nombre de mes
-            ->orderBy(DB::raw('MONTH(fecha_pago)'))  // Ordenar por número de mes
+        $resultados_sin_formato = Transacciones::selectRaw('MONTH(fecha_pago) as num_mes, SUM(monto) AS monto_total')
+            ->whereYear('fecha_pago', now()->year)
+            ->groupBy(DB::raw('MONTH(fecha_pago)'))
+            ->orderBy(DB::raw('MONTH(fecha_pago)'))
             ->get();
-
-        // Construir el array en el formato deseado
-        $chartData = $resultados->map(function ($item) {
+    
+        return $resultados_sin_formato->map(function ($item) {
             return [
-                'Day' => $item->nombre_mes,
-                'Value' => $item->monto_total,
+                'Day' => Carbon::create()->month($item->num_mes)->locale('es')->translatedFormat('F'),
+                'Value' => $item->monto_total,  // No aplicar formato aquí
             ];
         })->toArray();
-
-        return $chartData;
     }
+    
+    
 
 
     public function render()
@@ -70,9 +66,22 @@ class DashboardComponent extends Component
             ->where('status', 'completado')
             ->sum('monto');
 
-        $total_usuarios = User::all()->count();
+        $ventas_totales_año = transacciones::whereYear('fecha_pago', '=', $mes_pasado->year)
+            ->where('status', 'completado')
+            ->sum('monto');
+
+        $ventas_totales_año_formt = '$' . number_format($ventas_totales_año, 2);
+
+
+        $total_usuarios = User::all()->count() - 1;
 
         $total_usuarios_activos = User::where('status', 'Activo')->count();
+
+        $total_suscripciones_mes = suscripciones::whereYear('fecha_inicio', '=', now()->year)
+            ->whereMonth('fecha_inicio', '=', now()->month)
+            ->count();// Obtiene el número de suscripciones del mes actual
+
+      
         // fin admin codigo
 
 
@@ -81,7 +90,7 @@ class DashboardComponent extends Component
         $userId = auth()->id();
 
         $suscripcion = DB::table('suscripciones as s')
-            ->select('s.id', 's.fecha_inicio', 's.fecha_fin', DB::raw("CONCAT(u.name, ' ', u.firstname, ' ', u.lastname) AS nombre_cliente"), 'm.nombre_membresia', 'm.descripcion', 'm.precio')
+            ->select('s.id', 's.fecha_inicio', 's.fecha_fin', DB::raw("CONCAT(u.name, ' ', u.firstname, ' ', u.lastname) AS nombre_cliente"), 'm.nombre', 'm.descripcion', 'm.precio')
             ->join('users as u', 's.user_id', '=', 'u.id')
             ->join('membresias as m', 's.membresia_id', '=', 'm.id')
             ->where('u.id', '=', $userId)
@@ -89,12 +98,12 @@ class DashboardComponent extends Component
 
 
         $query = DB::table('historial_suscripciones as hs')
-            ->select('hs.id', 'u.name as nombre_cliente', 'm.nombre_membresia', 'm.precio', 'hs.estado_anterior', 'hs.fecha_inicio', 'hs.fecha_fin')
+            ->select('hs.id', 'u.name as nombre_cliente', 'm.nombre', 'm.precio', 'hs.estado_anterior', 'hs.fecha_inicio', 'hs.fecha_fin')
             ->join('users as u', 'hs.user_id', '=', 'u.id')
             ->join('membresias as m', 'hs.membresia_id', '=', 'm.id')
             ->where('hs.user_id', $userId)
             ->where(function ($query) {
-                $query->orWhere('m.nombre_membresia', 'like', '%' . $this->search . '%')
+                $query->orWhere('m.nombre', 'like', '%' . $this->search . '%')
                     ->orWhere('hs.estado_anterior', 'like', '%' . $this->search . '%')
                     ->orWhere('hs.fecha_inicio', 'like', '%' . $this->search . '%')
                     ->orWhere('hs.fecha_fin', 'like', '%' . $this->search . '%');
@@ -106,13 +115,16 @@ class DashboardComponent extends Component
         // fin admin codigo
 
         return view('livewire.dashboard-component', [
-            'ventas_mes_actual' => $ventas_mes_actual,
-            'ventas_mes_pasado' => $ventas_mes_pasado,
-            'historialSuscripciones' => $historialSuscripciones,
-            'suscripcion' => $suscripcion,
-            'total_usuarios' => $total_usuarios,
-            'total_usuarios_activos' => $total_usuarios_activos,
-            'chartData' => $this->total_ventas_meses,
+            //'ventas_mes_actual' => $ventas_mes_actual,
+            //'ventas_mes_pasado' => $ventas_mes_pasado,
+            'ventas_totales_año_formt' => $ventas_totales_año_formt, // admin
+            'total_usuarios' => $total_usuarios, // admin
+            'total_usuarios_activos' => $total_usuarios_activos, // admin
+            'chartData' => $this->total_ventas_meses, // admin
+            'total_suscripciones_mes' => $total_suscripciones_mes, // admin
+
+            'historialSuscripciones' => $historialSuscripciones, // user
+            'suscripcion' => $suscripcion, // user
 
         ]);
     }

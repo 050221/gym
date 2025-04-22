@@ -59,38 +59,11 @@
             <x-input-error for="name" class="mt-2" />
         </div>
 
-        <!-- Firstname -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="firstname" value="{{ __('Firstname') }}" />
-            <x-input id="firstname" type="text" class="mt-1 block w-full" wire:model.defer="state.firstname" />
-            <x-input-error for="firstname" class="mt-2" />
+            <x-label for="email" value="{{ __('Email') }}" />
+            <x-input id="email" type="email" class="mt-1 block w-full" wire:model="state.email" required autocomplete="email" />
+            <x-input-error for="email" class="mt-2" />
         </div>
-
-        <!-- Lastname -->
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="lastname" value="{{ __('Lastname') }}" />
-            <x-input id="lastname" type="text" class="mt-1 block w-full" wire:model.defer="state.lastname" />
-            <x-input-error for="lastname" class="mt-2" />
-        </div>
-
-        <!-- Gender -->
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="gender" value="{{ __('Gender') }}" />
-            <select id="gender"  wire:model.defer="state.gender" class="mt-1 block w-full p-2.5  border-gray-00 text-gray-900 text-base rounded-lg focus:border-2 focus:ring-orange-500 focus:border-orange-500  dark:bg-gray-700 dark:border-orange-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
-            <x-input-error for="gender" class="mt-2" />
-        </div>
-
-                <!-- Phone -->
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="phone" value="{{ __('Phone') }}" />
-            <x-input id="phone" type="text" class="mt-1 block w-full" wire:model.defer="state.phone" />
-            <x-input-error for="phone" class="mt-2" />
-        </div>
-
-
     </x-slot>
 
     <x-slot name="actions">

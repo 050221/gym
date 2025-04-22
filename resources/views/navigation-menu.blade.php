@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-white dark:bg-dark-800 border-b border-gray-100 ">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -15,7 +15,7 @@
                 @can('user.dashboard')
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('assets/icons/icon-58X58.png') }}" >
+                        <img src="{{ asset('assets/icons/icon-58x58.png') }}" >
                     </a>
                 </div>
             @endcan
@@ -210,6 +210,11 @@
             <x-responsive-nav-link href="{{ route('historialSuscripciones') }}" :active="request()->routeIs('historialSuscripciones')">
                 {{ __('Historial suscripciones') }}
             </x-responsive-nav-link>
+            @can('admin.transacciones')
+                <x-responsive-nav-link  href="{{ route('transacciones') }}" :active="request()->routeIs('transacciones')">
+                    {{ __('Transacciones') }}
+                </x-responsive-nav-link>
+            @endcan  
         </div>
 
         <!-- Responsive Settings Options -->
